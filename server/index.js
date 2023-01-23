@@ -1,6 +1,6 @@
 require('dotenv').config();
 const app = require('express')();
-const PORT = 3000;
+const PORT = 3001;
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -27,6 +27,10 @@ mongoose.connect(
 
 app.get('/', (req, res) => {
     res.send('Home page');
+});
+
+app.get("/api", (req, res) => {
+  res.json({ message: "Hello from server!" });
 });
 
 app.listen(PORT, function () {

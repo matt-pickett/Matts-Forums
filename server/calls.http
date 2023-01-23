@@ -1,0 +1,28 @@
+GET http://localhost:3001/posts
+
+###
+
+GET http://localhost:3001/posts/63cdf997aaad5da7ca865a38
+
+###
+
+POST http://localhost:3001/posts
+content-type: application/json
+
+{
+    "title": "sample",
+    "description": "test"
+}
+
+### 
+
+DELETE http://localhost:3001/posts/639a8cf16ca48b0152f44e50
+
+###
+
+PATCH http://localhost:3001/posts/639a8b7291ffab186650ecde
+content-type: application/json
+
+{
+    "title": "new title"
+}
