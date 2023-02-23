@@ -1,35 +1,47 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
- 
-const Record = (props) => (
+import { useAuth0 } from "@auth0/auth0-react";
+import { handleArrayRequest } from './errorHandle';
+// Had to make this function NOT an implicit return arrow function
+// to define isAuthenticated. So I put {} after the => instead of (),
+// then said return ( [the HTML inside here is what returns] );
+const Record = (props) => {
+  const { isAuthenticated } = useAuth0();
+  return (
  <tr>
    <td className='text-light'>{props.record.title}</td>
    <td className='text-light'>{props.record.description}</td>
-   <td>
-     <Link className="btn btn-link" to={`./${props.record._id}`}>Update</Link> |
-     <button className="btn btn-link"
-       onClick={() => {
-         props.deleteRecord(props.record._id);
-       }}
-     >
-       Delete
-     </button>
-   </td>
+   <td className='text-light'>{props.record.username}</td>
+   <td className='text-light'>{props.record.user_id}</td>
+   {isAuthenticated && (
+    <>
+      <td>
+        <Link className="btn btn-link" to={`./${props.record._id}`}>Update</Link> |
+        <button className="btn btn-link"
+        onClick={() => {
+          props.deleteRecord(props.record._id);
+        }}
+        >
+        Delete
+        </button>
+      </td>
+    </>
+    )}
  </tr>
-);
+)};
  
 export default function RecordList() {
- const [data, setData] = useState([]);
+  const [data, setData] = useState([]);
+   const navigate = useNavigate();
  async function getData() {
      const response = await fetch(`./posts`);
  
-     if (!response.ok) {
-       const message = `An error occurred: ${response.statusText}`;
-       window.alert(message);
-       return;
-     }
- 
-     const data = await response.json();
+      const data = await handleArrayRequest(response);
+      if(!data) {
+        navigate("*");
+        return;
+      }
      setData(data);
    }
 
@@ -51,6 +63,7 @@ export default function RecordList() {
  
  // This method will map out the records on the table
  function recordList() {
+   
    return data.map((record) => {
      return (
        <Record
@@ -61,9 +74,9 @@ export default function RecordList() {
      );
    });
  }
- 
- // This following section will display the table with the records of individuals.
- return (
+
+ const { isAuthenticated } = useAuth0();
+ return ( 
    <div>
      <h3>Record List</h3>
      <table className="table table-striped" style={{ marginTop: 20 }}>
@@ -71,11 +84,18 @@ export default function RecordList() {
          <tr className='text-light'>
            <th>Title</th>
            <th>Description</th>
+           <th>Username</th>
+           <th>User Id</th>
            <th>Action</th>
          </tr>
        </thead>
        <tbody>{recordList()}</tbody>
      </table>
+     {isAuthenticated && (
+      <>
+        <Link to="/create">Create Record</Link>
+      </>
+      )}
    </div>
  );
 }

@@ -9,6 +9,14 @@ const PostSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    username: {
+        type: String,
+        required: true
+    },
+    user_id: {
+        type: String,
+        required: true
+    }
 });
 
 module.exports = mongoose.model('Posts', PostSchema);

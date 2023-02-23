@@ -1,16 +1,24 @@
 import React from 'react';
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import logo from "./logo.svg";
 import "./App.css";
+
+
+//Auth0
+import { useAuth0 } from "@auth0/auth0-react";
+import Auth0ProviderWithNavigate from './Auth0Provider';
 
 // Components
 import Navbar from "./Components/navbar";
 import Update from "./Components/update";
-import RecordList from "./Components/read";
+import RecordList from "./Components/display";
 import Create from "./Components/create";
+import { NotFoundPage } from "./Components/notFound";
+import { PageLoader } from "./Components/pageLoader";
+import { ProfilePage } from "./Components/profile";
+import { AuthenticationGuard } from "./Components/routeGuard";
 
 function App() {
-  
   // Initializes data to null and provides a function
   // setData to update
   // useState just initializes variables
@@ -35,17 +43,40 @@ function App() {
     getData();
   }, []);
 
+  const { isLoading } = useAuth0();
+
+  if (isLoading) {
+    return (
+      <div className="page-layout">
+        <PageLoader />
+      </div>
+    );
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-      <Routes>
-        <Route exact path="/" element={<RecordList />} />
-        <Route path="/:id" element={<Update />} />
-        <Route path="/create" element={<Create />} />
-      </Routes>
-      <Navbar />
-      </header>
-    </div>
+    <Auth0ProviderWithNavigate>
+      <div className="App">
+        <header className="App-header">
+          <Navbar />
+          <Routes>
+            <Route exact path="/" element={<RecordList />} />
+            <Route
+              path="/:id"
+              element={<AuthenticationGuard component={Update} />}
+            />
+            <Route
+              path="/create"
+              element={<AuthenticationGuard component={Create} />}
+            />
+            <Route
+              path="/profile"
+              element={<AuthenticationGuard component={ProfilePage} />}
+            />
+            <Route path="/notFound" element={<NotFoundPage />} />
+            <Route path="*" element={<Navigate replace to="/notFound" />} />
+          </Routes>
+        </header>
+      </div>
+    </Auth0ProviderWithNavigate>
   );
 }
 

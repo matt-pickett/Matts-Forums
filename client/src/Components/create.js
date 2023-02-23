@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router";
- 
+import { useAuth0 } from "@auth0/auth0-react";
+import { handleRequest } from './errorHandle';
 export default function Create() {
  const [data, setData] = useState({
    title: "",
-   description: ""
+   description: "",
+   username: "",
+   user_id: ""
  });
  const navigate = useNavigate();
- 
+ const { user } = useAuth0();
  // These methods will update the state properties.
  function updateForm(value) {
+  value.username = user.nickname;
+  value.user_id = user.sub;
    return setData((prev) => {
      return { ...prev, ...value };
    });
@@ -21,20 +26,28 @@ export default function Create() {
  
    // When a post request is sent to the create url, we'll add a new record to the database.
    const newPerson = { ...data };
- 
-   await fetch("./posts", {
+   
+   const response = await fetch("./posts", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
      },
      body: JSON.stringify(newPerson),
-   })
-   .catch(error => {
-     window.alert(error);
-     return;
    });
- 
-   setData({ title: "", description: ""});
+   
+   const ret = await handleRequest(response)
+   if (!ret) {
+    navigate("*");
+    return;
+   }
+
+   // Reset the data
+   setData({ 
+    title: "", 
+    description: "", 
+    username: "", 
+    user_id: ""
+    });
    navigate("/");
  }
  
@@ -60,7 +73,29 @@ export default function Create() {
            className="form-control"
            id="description"
            value={data.description}
-           onChange={(e) => updateForm({ description: e.target.value })}
+           onChange={(e) => updateForm({ description: e.target.value})}
+         />
+       </div>
+       <div className="form-group">
+         <label htmlFor="username">Username</label>
+         <input
+           type="text"
+           className="form-control"
+           id="username"
+           defaultValue={user.nickname}
+           disabled={true}
+          //  onChange={(e) => updateForm({ username: e.target.value })}
+         />
+       </div>
+       <div className="form-group">
+         <label htmlFor="user_id">User Id</label>
+         <input
+           type="text"
+           className="form-control"
+           id="user_id"
+           defaultValue={user.sub}
+           disabled={true}
+          //  onChange={(e) => updateForm({ user_id: e.target.value })}
          />
        </div>
        <div className="form-group">

@@ -25,6 +25,29 @@ mongoose.connect(
   .then(()=>console.log('connected'))
   .catch(e=>console.log(e));
 
+// Set up Auth0
+const { auth, requiresAuth } = require('express-openid-connect');
+app.use(
+  auth({
+    authRequired: false,
+    auth0Logout: true,
+    issuerBaseURL: process.env.ISSUER_BASE_URL,
+    baseURL: process.env.BASE_URL,
+    clientID: process.env.CLIENT_ID,
+    secret: process.env.SECRET,
+    idpLogout: true,
+  })
+);
+
+app.get('/status', (req, res) => {
+    res.send(req.oidc.isAuthenticated() ? 'Logged In' : 'Logged Out');
+});
+
+app.get('/profile', requiresAuth(), (req, res) => {
+    res.send(JSON.stringify(req.oidc.user));
+});
+
+
 app.get('/', (req, res) => {
     res.send('Home page');
 });

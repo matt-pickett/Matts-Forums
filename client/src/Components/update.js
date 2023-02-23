@@ -1,30 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
- 
+import { useAuth0 } from "@auth0/auth0-react";
+import { handleRequest } from "./errorHandle";
+
 export default function Update() {
  const [data, setData] = useState({
    title: "",
-   description: ""
+   description: "",
+   username: "",
+   user_id: ""
  });
  const params = useParams();
  const navigate = useNavigate();
  async function getData() {
      const id = params.id.toString();
-     console.log(id)
-     console.log(params)
      const response = await fetch(`./posts/${params.id.toString()}`);
- 
-     if (!response.ok) {
-       const message = `An error has occurred: ${response.statusText}`;
-       window.alert(message);
-       return;
-     }
- 
-     const data = await response.json();
-     if (!data) {
-       window.alert(`Record with id ${id} not found`);
-       navigate("/");
-       return;
+
+     const data = await handleRequest(response)
+     if(!data) {
+      navigate("*");
+      return;
      }
  
      setData(data);
@@ -37,6 +32,8 @@ export default function Update() {
  
  // These methods will update the state properties.
  function updateForm(value) {
+  value.username = user.nickname;
+  value.user_id = user.sub;
    return setData((prev) => {
      return { ...prev, ...value };
    });
@@ -46,7 +43,9 @@ export default function Update() {
    e.preventDefault();
    const updatedPost = {
      title: data.title,
-     description: data.description
+     description: data.description,
+     username: data.username,
+     user_id: data.user_id
    };
  
    // This will send a post request to update the data in the database.
@@ -60,8 +59,8 @@ export default function Update() {
  
    navigate("/");
  }
- 
- // This following section will display the form that takes input from the user to update the data.
+  
+ const { user } = useAuth0();
  return (
    <div>
      <h3>Update Post</h3>
@@ -84,6 +83,28 @@ export default function Update() {
            id="description"
            value={data.description}
            onChange={(e) => updateForm({ description: e.target.value })}
+         />
+       </div>
+       <div className="form-group">
+         <label htmlFor="username">Username</label>
+         <input
+           type="text"
+           className="form-control"
+           id="username"
+           defaultValue={user.nickname}
+           disabled={true}
+          //  onChange={(e) => updateForm({ username: e.target.value })}
+         />
+       </div>
+       <div className="form-group">
+         <label htmlFor="user_id">User Id</label>
+         <input
+           type="text"
+           className="form-control"
+           id="user_id"
+           defaultValue={user.sub}
+           disabled={true}
+          //  onChange={(e) => updateForm({ user_id: e.target.value })}
          />
        </div>
        <div className="form-group">

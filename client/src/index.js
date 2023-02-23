@@ -4,12 +4,15 @@ import { BrowserRouter } from "react-router-dom";
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import Auth0ProviderWithNavigate from './Auth0Provider';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <Auth0ProviderWithNavigate>
+        <App />
+      </Auth0ProviderWithNavigate>
     </BrowserRouter>
   </React.StrictMode>,
 );
