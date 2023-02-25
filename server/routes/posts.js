@@ -31,7 +31,8 @@ router.post('/', async (req, res) => {
         title: req.body.title,
         description: req.body.description,
         username: req.body.username,
-        user_id: req.body.user_id
+        user_id: req.body.user_id,
+        lastUpdated: req.body.lastUpdated
     });
     try {
         const savedPost = await newPost.save();
@@ -61,7 +62,8 @@ router.patch('/:postId', async (req, res) => {
                 title: req.body.title, 
                 description: req.body.description, 
                 username: req.body.username,
-                user_id: req.body.user_id 
+                user_id: req.body.user_id,
+                lastUpdated: req.body.lastUpdated
                 }}
         );
         res.json(updatedPost)

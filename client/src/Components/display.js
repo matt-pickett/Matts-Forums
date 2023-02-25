@@ -3,18 +3,20 @@ import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { handleArrayRequest } from './errorHandle';
+import {GetLastUpdate} from "./getDate"
 // Had to make this function NOT an implicit return arrow function
 // to define isAuthenticated. So I put {} after the => instead of (),
 // then said return ( [the HTML inside here is what returns] );
 const Record = (props) => {
-  const { isAuthenticated } = useAuth0();
+  const { isAuthenticated, user } = useAuth0();
   return (
  <tr>
    <td className='text-light'>{props.record.title}</td>
    <td className='text-light'>{props.record.description}</td>
    <td className='text-light'>{props.record.username}</td>
-   <td className='text-light'>{props.record.user_id}</td>
-   {isAuthenticated && (
+   <td className='text-light'><GetLastUpdate time={props.record.lastUpdated}></GetLastUpdate></td>
+   {/* Users can only edit their own post */}
+   {isAuthenticated && user.sub === props.record.user_id && (
     <>
       <td>
         <Link className="btn btn-link" to={`./${props.record._id}`}>Update</Link> |
@@ -85,7 +87,7 @@ export default function RecordList() {
            <th>Title</th>
            <th>Description</th>
            <th>Username</th>
-           <th>User Id</th>
+           <th>Last update</th>
            <th>Action</th>
          </tr>
        </thead>

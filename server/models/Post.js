@@ -16,6 +16,10 @@ const PostSchema = mongoose.Schema({
     user_id: {
         type: String,
         required: true
+    },
+    lastUpdated: {
+        type: String,
+        required: true
     }
 });
 

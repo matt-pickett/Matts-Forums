@@ -7,7 +7,8 @@ export default function Create() {
    title: "",
    description: "",
    username: "",
-   user_id: ""
+   user_id: "",
+   lastUpdated: ""
  });
  const navigate = useNavigate();
  const { user } = useAuth0();
@@ -15,6 +16,8 @@ export default function Create() {
  function updateForm(value) {
   value.username = user.nickname;
   value.user_id = user.sub;
+  value.lastUpdated = Date().toLocaleString();
+  console.log(value);
    return setData((prev) => {
      return { ...prev, ...value };
    });
@@ -46,7 +49,8 @@ export default function Create() {
     title: "", 
     description: "", 
     username: "", 
-    user_id: ""
+    user_id: "",
+    lastUpdated: ""
     });
    navigate("/");
  }
@@ -68,7 +72,7 @@ export default function Create() {
        </div>
        <div className="form-group">
          <label htmlFor="description">Description</label>
-         <input
+         <textarea
            type="text"
            className="form-control"
            id="description"

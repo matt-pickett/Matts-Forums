@@ -8,7 +8,8 @@ export default function Update() {
    title: "",
    description: "",
    username: "",
-   user_id: ""
+   user_id: "",
+   lastUpdated: ""
  });
  const params = useParams();
  const navigate = useNavigate();
@@ -34,6 +35,7 @@ export default function Update() {
  function updateForm(value) {
   value.username = user.nickname;
   value.user_id = user.sub;
+  value.lastUpdated = Date().toLocateString();
    return setData((prev) => {
      return { ...prev, ...value };
    });
@@ -45,7 +47,8 @@ export default function Update() {
      title: data.title,
      description: data.description,
      username: data.username,
-     user_id: data.user_id
+     user_id: data.user_id,
+     lastUpdated: data.lastUpdated
    };
  
    // This will send a post request to update the data in the database.
@@ -77,7 +80,7 @@ export default function Update() {
        </div>
        <div className="form-group">
          <label htmlFor="description">Description: </label>
-         <input
+         <textarea
            type="text"
            className="form-control"
            id="description"
