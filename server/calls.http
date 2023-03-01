@@ -34,7 +34,7 @@ content-type: application/json
 
 ###
 
-DELETE http://localhost:3001/posts/639a8cf16ca48b0152f44e50
+DELETE http://localhost:3001/posts/63f7fc4fda384dc27c5f8be1
 
 ###
 

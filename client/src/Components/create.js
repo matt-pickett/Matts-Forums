@@ -12,7 +12,7 @@ export default function Create() {
  });
  const navigate = useNavigate();
  const { user } = useAuth0();
- // These methods will update the state properties.
+
  function updateForm(value) {
   value.username = user.nickname;
   value.user_id = user.sub;
@@ -23,14 +23,12 @@ export default function Create() {
    });
  }
  
- // This function will handle the submission.
  async function onSubmit(e) {
    e.preventDefault();
  
-   // When a post request is sent to the create url, we'll add a new record to the database.
    const newPerson = { ...data };
    
-   const response = await fetch("./posts", {
+   const response = await fetch("/posts", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",
@@ -55,10 +53,9 @@ export default function Create() {
    navigate("/");
  }
  
- // This following section will display the form that takes the input from the user.
  return (
    <div>
-     <h3>Create New Record</h3>
+     <h3>New Post</h3>
      <form onSubmit={onSubmit}>
        <div className="form-group">
          <label htmlFor="title">Title</label>
@@ -88,18 +85,6 @@ export default function Create() {
            id="username"
            defaultValue={user.nickname}
            disabled={true}
-          //  onChange={(e) => updateForm({ username: e.target.value })}
-         />
-       </div>
-       <div className="form-group">
-         <label htmlFor="user_id">User Id</label>
-         <input
-           type="text"
-           className="form-control"
-           id="user_id"
-           defaultValue={user.sub}
-           disabled={true}
-          //  onChange={(e) => updateForm({ user_id: e.target.value })}
          />
        </div>
        <div className="form-group">

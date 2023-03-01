@@ -11,7 +11,6 @@ function parseHour(hour) {
   }
 
   export const GetLastUpdate = (props) => {
-    console.log(props);
     const last = new Date(props.time);
     const day = last.getDate();
     const month = last.toLocaleString('default', { month: 'long' });
@@ -20,8 +19,7 @@ function parseHour(hour) {
     const timeVal = (militaryHour >= 12) ? "PM" : "AM";
     const hour = parseHour(militaryHour);
     const minute = (last.getMinutes()<10?'0':'') + last.getMinutes()
-    console.log(minute);
     return (
-      <div className="profile__value">{month} {day}, {year} @ {hour}:{minute} {timeVal}</div>
+      <span className="profile__value">{month} {day}, {year} @ {hour}:{minute} {timeVal}</span>
     );
   }

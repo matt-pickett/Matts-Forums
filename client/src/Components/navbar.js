@@ -1,9 +1,7 @@
 import React from "react";
  
-// We import bootstrap to make our application look better.
 import "bootstrap/dist/css/bootstrap.css";
  
-// We import NavLink to utilize the react router.
 import { NavLink } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { LoginButton } from "./buttons/loginButton";

@@ -14,8 +14,7 @@ export default function Update() {
  const params = useParams();
  const navigate = useNavigate();
  async function getData() {
-     const id = params.id.toString();
-     const response = await fetch(`./posts/${params.id.toString()}`);
+     const response = await fetch(`/posts/${params.id.toString()}`);
 
      const data = await handleRequest(response)
      if(!data) {
@@ -96,18 +95,6 @@ export default function Update() {
            id="username"
            defaultValue={user.nickname}
            disabled={true}
-          //  onChange={(e) => updateForm({ username: e.target.value })}
-         />
-       </div>
-       <div className="form-group">
-         <label htmlFor="user_id">User Id</label>
-         <input
-           type="text"
-           className="form-control"
-           id="user_id"
-           defaultValue={user.sub}
-           disabled={true}
-          //  onChange={(e) => updateForm({ user_id: e.target.value })}
          />
        </div>
        <div className="form-group">

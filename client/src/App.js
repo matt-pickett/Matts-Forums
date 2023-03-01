@@ -1,6 +1,5 @@
 import React from 'react';
 import { Route, Routes, Navigate } from "react-router-dom";
-import logo from "./logo.svg";
 import "./App.css";
 
 
@@ -13,19 +12,16 @@ import Navbar from "./Components/navbar";
 import Update from "./Components/update";
 import RecordList from "./Components/display";
 import Create from "./Components/create";
+import Info from "./Components/info";
 import { NotFoundPage } from "./Components/notFound";
 import { PageLoader } from "./Components/pageLoader";
 import { ProfilePage } from "./Components/profile";
 import { AuthenticationGuard } from "./Components/routeGuard";
 
 function App() {
-  // Initializes data to null and provides a function
-  // setData to update
   // useState just initializes variables
-  const [data, setData] = React.useState(null);
+  const [setData] = React.useState(null);
 
-  // Both Node backend and React have to be running 
-  // on different ports to fetch API data
   const getData = () => {
     fetch("./posts")
       // Parse json resolve and return it to next then block
@@ -59,8 +55,9 @@ function App() {
           <Navbar />
           <Routes>
             <Route exact path="/" element={<RecordList />} />
+            <Route path="/info/:id" element={<Info />} />
             <Route
-              path="/:id"
+              path="/update/:id"
               element={<AuthenticationGuard component={Update} />}
             />
             <Route
