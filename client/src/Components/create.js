@@ -28,7 +28,7 @@ export default function Create() {
  
    const newPerson = { ...data };
    
-   const response = await fetch("/posts", {
+   const response = await fetch("https://matts-forums-api.onrender.com/posts", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",

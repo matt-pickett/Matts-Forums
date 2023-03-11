@@ -19,44 +19,11 @@ import { ProfilePage } from "./Components/profile";
 import { AuthenticationGuard } from "./Components/routeGuard";
 
 function App() {
-  // useState just initializes variables
-  const [data, setData] = React.useState(null);
-
-  const getData = () => {
-    fetch("/posts")
-      // Parse json resolve and return it to next then block
-      .then((res) => {
-      if (!res.ok) {
-        throw new Error("Network response was not ok");
-      }
-      console.log(res.json());
-      return res.json();
-      })
-      .then((data) => {
-        setData(data);
-        console.log(data);
-        return data;
-      })
-      // Call setData function with parsed json and return it (return doesn't matter)
-      .then((data) => setData(data)) 
-      // Catch any failure callback and log it
-      .catch((e) => console.log(e));
-  }
-
-  // useEffect runs "side effects" independently of rendering
-  // Side effects are using fetch, using a timer,
-  // or directly updating the DOM without rendering
-  React.useEffect(() => {
-    getData();
-  }, []);
-
   const { isLoading } = useAuth0();
 
   if (isLoading) {
     return (
-      <div className="page-layout">
-        <PageLoader />
-      </div>
+      <PageLoader />
     );
   }
   return (

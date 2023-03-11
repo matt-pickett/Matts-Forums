@@ -3,6 +3,8 @@ body,
 #root {
   height: 100%;
   color: #fff;
+  caret-color: transparent;
+  background-color: #212529 !important;
 }
 
 .App {

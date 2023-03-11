@@ -9,18 +9,21 @@ import { handleArrayRequest } from './errorHandle';
 // then said return ( [the HTML inside here is what returns] );
 const Record = (props) => {
   const { isAuthenticated, user } = useAuth0();
+  const navigate = useNavigate();
   return (
  <tr>
    <td>
-    <Link className="btn btn-link" to={`./info/${props.record._id}`}>{props.record.title}</Link>
+    <Link className="btn btn-link my-link" to={`./info/${props.record._id}`}>{props.record.title}</Link>
    </td>
    <td className="text-light">{props.record.username}</td>
    {/* Users can only edit their own post */}
    {isAuthenticated && user.sub === props.record.user_id && (
     <>
-      <td>
-        <Link className="btn btn-link" to={`./update/${props.record._id}`}>Update</Link> |
-        <button className="btn btn-link"
+      <td className="d-flex justify-content-center">
+        <button className="btn btn-secondary me-3" onClick={() => navigate(`./update/${props.record._id}`)}>
+          Update
+        </button>
+        <button className="btn btn-danger"
         onClick={() => {
           props.deleteRecord(props.record._id);
         }}
@@ -45,10 +48,8 @@ export default function Display() {
    const navigate = useNavigate();
  async function getData() {
     // 'https://[project-name].onrender.com'
-     const response = await fetch(`/posts`);
-      console.log(response.json());
+     const response = await fetch(`https://matts-forums-api.onrender.com/posts`);
       const data = await handleArrayRequest(response);
-      console.log(data);
       if(!data) {
         navigate("*");
         return;
@@ -56,13 +57,16 @@ export default function Display() {
      setData(data);
    }
 
+  // useEffect runs "side effects" independently of rendering
+  // Side effects are using fetch, using a timer,
+  // or directly updating the DOM without rendering
  useEffect(() => {
    getData();
    return;
  }, [data.length]);
  
  async function deleteRecord(id) {
-   await fetch(`./posts/${id}`, {
+   await fetch(`https://matts-forums-api.onrender.com/posts/${id}`, {
      method: "DELETE"
    });
  
@@ -88,7 +92,7 @@ export default function Display() {
     <div>
       
       <div className="d-flex flex-column align-items-center justify-content-center" style={{ height: "100vh" }}>
-        <h1>Posts</h1>
+        <h3>Posts</h3>
         <table className="table table-dark table-bordered table-striped table-hover" style={{ marginTop: 20, width: "50vw"}}>
           <thead className="text-light">
             <tr>
@@ -100,7 +104,9 @@ export default function Display() {
           <tbody>{recordList()}</tbody>
         </table>
         {isAuthenticated && (
-          <Link to="/create">Create Post</Link>
+          <button className="btn btn-primary" onClick={() => navigate("/create")}>
+            Create Post
+          </button>
         )}
       </div>
     </div>

@@ -2,8 +2,8 @@ import React from "react";
 
 export const NotFoundPage = () => {
   return (
-      <div className="content-layout">
-        <h1 id="page-title" className="content__title">
+      <div className="d-flex flex-column align-items-center justify-content-center" style={{ height: "100vh" }}>
+        <h1>
           Not Found
         </h1>
       </div>
