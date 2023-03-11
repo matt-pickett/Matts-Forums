@@ -46,8 +46,9 @@ export default function Display() {
  async function getData() {
     // 'https://[project-name].onrender.com'
      const response = await fetch(`/posts`);
- 
+      console.log(response.json());
       const data = await handleArrayRequest(response);
+      console.log(data);
       if(!data) {
         navigate("*");
         return;

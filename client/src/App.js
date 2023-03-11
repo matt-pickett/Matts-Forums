@@ -23,9 +23,20 @@ function App() {
   const [data, setData] = React.useState(null);
 
   const getData = () => {
-    fetch("./posts")
+    fetch("/posts")
       // Parse json resolve and return it to next then block
-      .then((res) => res.json())
+      .then((res) => {
+      if (!res.ok) {
+        throw new Error("Network response was not ok");
+      }
+      console.log(res.json());
+      return res.json();
+      })
+      .then((data) => {
+        setData(data);
+        console.log(data);
+        return data;
+      })
       // Call setData function with parsed json and return it (return doesn't matter)
       .then((data) => setData(data)) 
       // Catch any failure callback and log it
