@@ -44,6 +44,7 @@ export default function Display() {
   const [data, setData] = useState([]);
    const navigate = useNavigate();
  async function getData() {
+    // 'https://[project-name].onrender.com'
      const response = await fetch(`/posts`);
  
       const data = await handleArrayRequest(response);
