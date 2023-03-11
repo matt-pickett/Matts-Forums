@@ -4,29 +4,20 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-
-// Import routes
-const postsRoutes = require('./routes/posts');
-
-// Define middleware
-app.use(cors())
-app.use(bodyParser.json()); // For every request run bodyParser
-app.use('/posts', postsRoutes)
+// Verify that environment variables are set up correctly
+if (!process.env.DATABASE_URL) {
+  console.error('Please set up the required environment variables for the database.');
+  process.exit(1);
+}
 
 // Connect to database
 mongoose.set('strictQuery', true);
-mongoose.connect(
-  process.env.DATABASE_URL, {
+mongoose.connect(process.env.DATABASE_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-  },
-  )
+  })
   .then(()=>console.log('connected'))
   .catch(e=>console.log(e));
-
-// Set up Auth0
-const { auth, requiresAuth } = require('express-openid-connect');
-
 
 // Verify that required dependencies are installed
 try {
@@ -36,20 +27,28 @@ try {
   process.exit(1);
 }
 
-// Verify that environment variables are set up correctly
+// Verify that environment variables are set up correctly for Auth0
 if (!process.env.ISSUER_BASE_URL || !process.env.BASE_URL || !process.env.CLIENT_ID || !process.env.SECRET) {
   console.error('Please set up the required environment variables for authentication.');
   process.exit(1);
 }
 
-console.log("issuer baseurl:",process.env.ISSUER_BASE_URL, "base url:",process.env.BASE_URL, "client id:", process.env.CLIENT_ID, "secret:",process.env.SECRET)
+// Define middleware
+app.use(cors())
+app.use(bodyParser.json()); // For every request run bodyParser
+
+// Import routes
+const postsRoutes = require('./routes/posts');
+app.use('/posts', postsRoutes);
+
 // Verify that the app object is defined
 if (!app) {
   console.error('Please define the app object before using the auth middleware.');
   process.exit(1);
 }
 
-// Set up the auth middleware with the appropriate options
+// Set up Auth0 middleware with the appropriate options
+const { auth, requiresAuth } = require('express-openid-connect');
 app.use(
   auth({
     authRequired: false,
@@ -62,20 +61,19 @@ app.use(
   })
 );
 
-// Verify that the middleware options are set up correctly
-app._router.stack.some(layer => {
-  console.log(layer);
-  return layer.name === 'openid';
-});
+// Verify that the auth middleware is set up correctly
 // if (!app._router.stack.some(layer => layer.name === 'openid')) {
 //   console.error('Please check the auth middleware options and try again.');
 //   process.exit(1);
 // }
 
+// Define routes
 app.get('/status', (req, res) => {
-    res.send(req.oidc.isAuthenticated() ? 'Logged In' : 'Logged Out');
+  res.send(req.oidc.isAuthenticated() ? 'Logged In' : 'Logged Out');
 });
 
 app.get('/profile', requiresAuth(), (req, res) => {
-    res.send(JSON.stringify(req.oidc.user));
+  res.send(JSON.stringify(req.oidc.user));
 });
+
+module.exports = app;
