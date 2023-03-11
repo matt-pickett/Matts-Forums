@@ -1,53 +1,31 @@
 require('dotenv').config();
 const app = require('express')();
+const PORT = 3001;
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-// Verify that environment variables are set up correctly
-if (!process.env.DATABASE_URL) {
-  console.error('Please set up the required environment variables for the database.');
-  process.exit(1);
-}
 
-// Connect to database
-mongoose.set('strictQuery', true);
-mongoose.connect(process.env.DATABASE_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .then(()=>console.log('connected'))
-  .catch(e=>console.log(e));
-
-// Verify that required dependencies are installed
-try {
-  require.resolve('express-openid-connect');
-} catch (error) {
-  console.error('Please install the express-openid-connect package:', error);
-  process.exit(1);
-}
-
-// Verify that environment variables are set up correctly for Auth0
-if (!process.env.ISSUER_BASE_URL || !process.env.BASE_URL || !process.env.CLIENT_ID || !process.env.SECRET) {
-  console.error('Please set up the required environment variables for authentication.');
-  process.exit(1);
-}
+// Import routes
+const postsRoutes = require('./routes/posts');
 
 // Define middleware
 app.use(cors())
 app.use(bodyParser.json()); // For every request run bodyParser
+app.use('/posts', postsRoutes)
 
-// Import routes
-const postsRoutes = require('./routes/posts');
-app.use('/posts', postsRoutes);
+// Connect to database
+mongoose.set('strictQuery', true);
+mongoose.connect(
+  process.env.DATABASE_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  },
+  )
+  .then(()=>console.log('connected'))
+  .catch(e=>console.log(e));
 
-// Verify that the app object is defined
-if (!app) {
-  console.error('Please define the app object before using the auth middleware.');
-  process.exit(1);
-}
-
-// Set up Auth0 middleware with the appropriate options
+// Set up Auth0
 const { auth, requiresAuth } = require('express-openid-connect');
 app.use(
   auth({
@@ -61,19 +39,20 @@ app.use(
   })
 );
 
-// Verify that the auth middleware is set up correctly
-// if (!app._router.stack.some(layer => layer.name === 'openid')) {
-//   console.error('Please check the auth middleware options and try again.');
-//   process.exit(1);
-// }
-
-// Define routes
 app.get('/status', (req, res) => {
-  res.send(req.oidc.isAuthenticated() ? 'Logged In' : 'Logged Out');
+    res.send(req.oidc.isAuthenticated() ? 'Logged In' : 'Logged Out');
 });
 
 app.get('/profile', requiresAuth(), (req, res) => {
-  res.send(JSON.stringify(req.oidc.user));
+    res.send(JSON.stringify(req.oidc.user));
 });
 
-module.exports = app;
+mongoose.connection.once('open', () => {
+    console.log('Connected to MongoDB')
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+})
+
+mongoose.connection.on('error', err => {
+    console.log(err)
+    logEvents(`${err.no}: ${err.code}\t${err.syscall}\t${err.hostname}`, 'mongoErrLog.log')
+})
