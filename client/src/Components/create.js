@@ -54,7 +54,7 @@ export default function Create() {
  }
  
  return (
-   <div>
+   <div className="d-flex flex-column align-items-center justify-content-center" style={{ height: "100vh" }}>
      <h3>New Post</h3>
      <form onSubmit={onSubmit}>
        <div className="form-group">
@@ -87,7 +87,7 @@ export default function Create() {
            disabled={true}
          />
        </div>
-       <div className="form-group">
+       <div className="form-group pt-3">
          <input
            type="submit"
            value="Create Post"

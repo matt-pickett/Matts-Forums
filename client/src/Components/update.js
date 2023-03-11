@@ -64,7 +64,7 @@ export default function Update() {
   
  const { user } = useAuth0();
  return (
-   <div>
+   <div className="d-flex flex-column align-items-center justify-content-center" style={{ height: "100vh" }}>
      <h3>Update Post</h3>
      <form onSubmit={onSubmit}>
        <div className="form-group">

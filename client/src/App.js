@@ -10,7 +10,7 @@ import Auth0ProviderWithNavigate from './Auth0Provider';
 // Components
 import Navbar from "./Components/navbar";
 import Update from "./Components/update";
-import RecordList from "./Components/display";
+import Display from "./Components/display";
 import Create from "./Components/create";
 import Info from "./Components/info";
 import { NotFoundPage } from "./Components/notFound";
@@ -20,7 +20,7 @@ import { AuthenticationGuard } from "./Components/routeGuard";
 
 function App() {
   // useState just initializes variables
-  const [setData] = React.useState(null);
+  const [data, setData] = React.useState(null);
 
   const getData = () => {
     fetch("./posts")
@@ -50,11 +50,10 @@ function App() {
   }
   return (
     <Auth0ProviderWithNavigate>
-      <div className="App">
-        <header className="App-header">
+      <div className="App bg-dark">
           <Navbar />
           <Routes>
-            <Route exact path="/" element={<RecordList />} />
+            <Route exact path="/" element={<Display />} />
             <Route path="/info/:id" element={<Info />} />
             <Route
               path="/update/:id"
@@ -71,7 +70,6 @@ function App() {
             <Route path="/notFound" element={<NotFoundPage />} />
             <Route path="*" element={<Navigate replace to="/notFound" />} />
           </Routes>
-        </header>
       </div>
     </Auth0ProviderWithNavigate>
   );

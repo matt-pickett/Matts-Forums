@@ -31,10 +31,11 @@ export default function Info() {
  }, [params.id, navigate]);
   
  return (
-    <div>
-        <h1>
+    <div className="d-flex flex-column align-items-center justify-content-center" style={{ height: "100vh" }}>
+        <h3 style={{position: "fixed", left: "50%", top: "200px",transform: "translate(-50%, -50%)"}}>
           {data.title}
-        </h1>
+        </h3>
+        <h1>{data.description}</h1>
         <div>
             <div style={{position: "fixed", left: "50%", bottom: "0px",transform: "translate(-50%, -50%)"}}>
                 <div>Post by: {data.username}</div>

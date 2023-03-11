@@ -16,7 +16,7 @@ export const ProfilePage = () => {
   }
 
   return (
-      <div className="content-layout pt-5 mt-5">
+      <div className="d-flex flex-column align-items-center justify-content-center" style={{ height: "100vh" }}>
         <h1>
           Profile Page
         </h1>

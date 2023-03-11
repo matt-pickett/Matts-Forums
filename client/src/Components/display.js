@@ -11,10 +11,10 @@ const Record = (props) => {
   const { isAuthenticated, user } = useAuth0();
   return (
  <tr>
-   <td className='text-light'>
+   <td>
     <Link className="btn btn-link" to={`./info/${props.record._id}`}>{props.record.title}</Link>
    </td>
-   <td className='text-light'>{props.record.username}</td>
+   <td className="text-light">{props.record.username}</td>
    {/* Users can only edit their own post */}
    {isAuthenticated && user.sub === props.record.user_id && (
     <>
@@ -30,10 +30,17 @@ const Record = (props) => {
       </td>
     </>
     )}
+    {isAuthenticated && user.sub !== props.record.user_id && (
+      <td></td>
+    )}
+    {!isAuthenticated && (
+        <td>
+        </td>
+      )}
  </tr>
 )};
  
-export default function RecordList() {
+export default function Display() {
   const [data, setData] = useState([]);
    const navigate = useNavigate();
  async function getData() {
@@ -64,7 +71,6 @@ export default function RecordList() {
  function recordList() {
    
    return data.map((record) => {
-    console.log(record);
      return (
        <Record
          record={record}
@@ -76,24 +82,25 @@ export default function RecordList() {
  }
 
  const { isAuthenticated } = useAuth0();
- return ( 
-   <div>
-     <h3>Posts</h3>
-     <table className="table table-striped" style={{ marginTop: 20 }}>
-       <thead>
-         <tr className='text-light'>
-           <th>Title</th>
-           <th>Username</th>
-           <th>Action</th>
-         </tr>
-       </thead>
-       <tbody>{recordList()}</tbody>
-     </table>
-     {isAuthenticated && (
-      <>
-        <Link to="/create">Create Post</Link>
-      </>
-      )}
-   </div>
- );
+ return (
+    <div>
+      
+      <div className="d-flex flex-column align-items-center justify-content-center" style={{ height: "100vh" }}>
+        <h1>Posts</h1>
+        <table className="table table-dark table-bordered table-striped table-hover" style={{ marginTop: 20, width: "50vw"}}>
+          <thead className="text-light">
+            <tr>
+              <th>Title</th>
+              <th>Username</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>{recordList()}</tbody>
+        </table>
+        {isAuthenticated && (
+          <Link to="/create">Create Post</Link>
+        )}
+      </div>
+    </div>
+  );
 }
