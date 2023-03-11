@@ -1,6 +1,5 @@
 require('dotenv').config();
 const app = require('express')();
-const PORT = 3001;
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -43,6 +42,7 @@ if (!process.env.ISSUER_BASE_URL || !process.env.BASE_URL || !process.env.CLIENT
   process.exit(1);
 }
 
+console.log("issuer baseurl:",process.env.ISSUER_BASE_URL, "base url:",process.env.BASE_URL, "client id:", process.env.CLIENT_ID, "secret:",process.env.SECRET)
 // Verify that the app object is defined
 if (!app) {
   console.error('Please define the app object before using the auth middleware.');
@@ -63,10 +63,14 @@ app.use(
 );
 
 // Verify that the middleware options are set up correctly
-if (!app._router.stack.some(layer => layer.name === 'openid')) {
-  console.error('Please check the auth middleware options and try again.');
-  process.exit(1);
-}
+app._router.stack.some(layer => {
+  console.log(layer);
+  return layer.name === 'openid';
+});
+// if (!app._router.stack.some(layer => layer.name === 'openid')) {
+//   console.error('Please check the auth middleware options and try again.');
+//   process.exit(1);
+// }
 
 app.get('/status', (req, res) => {
     res.send(req.oidc.isAuthenticated() ? 'Logged In' : 'Logged Out');
