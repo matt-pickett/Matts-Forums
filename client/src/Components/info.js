@@ -14,7 +14,7 @@ export default function Info() {
  const params = useParams();
  const navigate = useNavigate();
  async function getData() {
-     const response = await fetch(`https://matts-forums-api.onrender.com/posts/${params.id.toString()}`);
+     const response = await fetch(`https://mattsposts-api-api.onrender.com/posts/${params.id.toString()}`);
 
      const data = await handleRequest(response)
      if(!data) {

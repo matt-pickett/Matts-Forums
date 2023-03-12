@@ -14,7 +14,7 @@ export default function Update() {
  const params = useParams();
  const navigate = useNavigate();
  async function getData() {
-     const response = await fetch(`https://matts-forums-api.onrender.com/posts/${params.id.toString()}`);
+     const response = await fetch(`https://mattsposts-api-api.onrender.com/posts/${params.id.toString()}`);
 
      const data = await handleRequest(response)
      if(!data) {
@@ -51,7 +51,7 @@ export default function Update() {
    };
  
    // This will send a post request to update the data in the database.
-   await fetch(`https://matts-forums-api.onrender.com/posts/${params.id}`, {
+   await fetch(`https://mattsposts-api-api.onrender.com/posts/${params.id}`, {
      method: "PATCH",
      body: JSON.stringify(updatedPost),
      headers: {

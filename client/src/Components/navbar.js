@@ -35,7 +35,7 @@ export default function Navbar() {
     <div>
       <nav className="navbar navbar-expand-lg navbar-info bg-secondary fixed-top">
         <h1 style={{position: "absolute", left: "50%", top: "40px",transform: "translate(-50%, -50%)"}}>
-              Matt's Forum
+              Matt's Posts
         </h1>
         <button
           className="navbar-toggler"

@@ -47,8 +47,7 @@ export default function Display() {
   const [data, setData] = useState([]);
    const navigate = useNavigate();
  async function getData() {
-    // 'https://[project-name].onrender.com'
-     const response = await fetch(`https://matts-forums-api.onrender.com/posts`);
+     const response = await fetch(`https://mattsposts-api.onrender.com/posts`);
       const data = await handleArrayRequest(response);
       if(!data) {
         navigate("*");
@@ -66,7 +65,7 @@ export default function Display() {
  }, [data.length]);
  
  async function deleteRecord(id) {
-   await fetch(`https://matts-forums-api.onrender.com/posts/${id}`, {
+   await fetch(`https://mattsposts-api.onrender.com/posts/${id}`, {
      method: "DELETE"
    });
  
