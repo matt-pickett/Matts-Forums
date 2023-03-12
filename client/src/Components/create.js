@@ -25,10 +25,9 @@ export default function Create() {
  
  async function onSubmit(e) {
    e.preventDefault();
- 
    const newPerson = { ...data };
    
-   const response = await fetch("https://mattsposts-api-api.onrender.com/posts", {
+   const response = await fetch("https://mattsposts-api.onrender.com/posts", {
      method: "POST",
      headers: {
        "Content-Type": "application/json",

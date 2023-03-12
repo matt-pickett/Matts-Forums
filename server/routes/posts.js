@@ -45,7 +45,7 @@ router.post('/', async (req, res) => {
 // Delete a post
 router.delete('/:postId', async (req, res) => {
     try {
-        const removedPost = await Post.remove({ _id: req.params.postId })
+        const removedPost = await Post.deleteMany({ _id: req.params.postId })
         res.json(removedPost)
     }
     catch(error) {

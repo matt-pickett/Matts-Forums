@@ -45,13 +45,13 @@ const Record = (props) => {
  
 export default function Display() {
   const [data, setData] = useState([]);
+  const [isEmpty, setIsEmpty] = useState(false);
    const navigate = useNavigate();
  async function getData() {
      const response = await fetch(`https://mattsposts-api.onrender.com/posts`);
       const data = await handleArrayRequest(response);
       if(!data) {
-        navigate("*");
-        return;
+        setIsEmpty(true);
       }
      setData(data);
    }
@@ -62,7 +62,7 @@ export default function Display() {
  useEffect(() => {
    getData();
    return;
- }, [data.length]);
+ }, [data]);
  
  async function deleteRecord(id) {
    await fetch(`https://mattsposts-api.onrender.com/posts/${id}`, {
@@ -87,6 +87,18 @@ export default function Display() {
  }
 
  const { isAuthenticated } = useAuth0();
+ if (isEmpty) {
+  return (
+    <div className="d-flex flex-column align-items-center justify-content-center" style={{ height: "100vh" }}>
+      <h1>No posts yet</h1>
+      {isAuthenticated && (
+          <button className="btn btn-primary" onClick={() => navigate("/create")}>
+            Create Post
+          </button>
+      )}
+    </div>
+  );
+ }
  return (
     <div>
       

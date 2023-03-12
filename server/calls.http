@@ -10,14 +10,15 @@ GET http://localhost:3001/posts/asdf123asdf
 
 ###
 
-POST http://localhost:3001/posts
+POST https://mattsposts-api.onrender.com/posts
 content-type: application/json
 
 {
     "title": "sample",
     "description": "test",
     "username": "me",
-    "user_id": 12345
+    "user_id": 12345,
+    "lastUpdated": "4:34PM"
 }
 
 ### 
@@ -34,7 +35,7 @@ content-type: application/json
 
 ###
 
-DELETE http://localhost:3001/posts/63f7fc4fda384dc27c5f8be1
+DELETE http://localhost:3001/posts/640d1e134916eabbc7ce50e2
 
 ###
 
