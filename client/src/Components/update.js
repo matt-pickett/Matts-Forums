@@ -14,16 +14,16 @@ export default function Update() {
  const params = useParams();
  const navigate = useNavigate();
  async function getData() {
-     const response = await fetch(`https://mattsposts-api.onrender.com/posts/${params.id.toString()}`);
-
-     const data = await handleRequest(response)
-     if(!data) {
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_SERVER_URL}/${params.id.toString()}`);
+      const data = handleRequest(response);
+      setData(data);
+    } 
+    catch (error) {
+      console.error(error);
       navigate("*");
-      return;
-     }
- 
-     setData(data);
-   }
+  }
+}
 
  useEffect(() => {
    getData();
@@ -51,7 +51,7 @@ export default function Update() {
    };
  
    // This will send a post request to update the data in the database.
-   await fetch(`https://mattsposts-api.onrender.com/posts/${params.id}`, {
+   await fetch(`${process.env.REACT_APP_API_SERVER_URL}/${params.id}`, {
      method: "PATCH",
      body: JSON.stringify(updatedPost),
      headers: {

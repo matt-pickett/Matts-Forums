@@ -1,7 +1,7 @@
 export async function handleArrayRequest(response) {
     if (!response.ok) {
        const message = `An error occurred: ${response.statusText}`;
-       window.alert(message);
+       console.error(message);
        return null;
      }
 
@@ -15,8 +15,8 @@ export async function handleArrayRequest(response) {
 export async function handleRequest(response) {
     // Bad API request (ex. 404 error)
     if (!response.ok) {
-        const message = `An error has occurred: ${response.statusText}`;
-        window.alert(message);
+        const message = `An error occurred: ${response.statusText}`;
+        console.error(message);
         return null;
     }
 

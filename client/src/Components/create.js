@@ -17,7 +17,6 @@ export default function Create() {
   value.username = user.nickname;
   value.user_id = user.sub;
   value.lastUpdated = Date().toLocaleString();
-  console.log(value);
    return setData((prev) => {
      return { ...prev, ...value };
    });
@@ -27,31 +26,35 @@ export default function Create() {
    e.preventDefault();
    const newPerson = { ...data };
    
-   const response = await fetch("https://mattsposts-api.onrender.com/posts", {
-     method: "POST",
-     headers: {
-       "Content-Type": "application/json",
-     },
-     body: JSON.stringify(newPerson),
-   });
-   
-   const ret = await handleRequest(response)
-   if (!ret) {
-    navigate("*");
-    return;
+   try {
+     const response = await fetch(`${process.env.REACT_APP_API_SERVER_URL}`, {
+       method: "POST",
+       headers: {
+         "Content-Type": "application/json",
+       },
+       body: JSON.stringify(newPerson),
+     });
+     
+     const ret = await handleRequest(response);
+     if (!ret) {
+       navigate("*");
+       return;
+     }
+     
+     // Reset the data
+     setData({ 
+      title: "", 
+      description: "", 
+      username: "", 
+      user_id: "",
+      lastUpdated: ""
+      });
+     navigate("/");
+   } catch (error) {
+     console.error(error);
+     throw new Error("An error occurred while fetching the results:", error);
    }
-
-   // Reset the data
-   setData({ 
-    title: "", 
-    description: "", 
-    username: "", 
-    user_id: "",
-    lastUpdated: ""
-    });
-   navigate("/");
- }
- 
+}
  return (
    <div className="d-flex flex-column align-items-center justify-content-center" style={{ height: "100vh" }}>
      <h3>New Post</h3>
