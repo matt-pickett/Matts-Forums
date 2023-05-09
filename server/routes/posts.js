@@ -2,9 +2,43 @@
 const express = require('express');
 const Post = require('../models/Post');
 const router = express.Router();
+const oAuth = require("../middleware/oauth");
+const jwtCheck = require("../middleware/jwtCheck")
+
+
+// router.post('/', oAuth, async (req, res) => {
+//     try {
+//     const { access_token } = req.oauth;
+//     const data = {
+//       "title": "sample",
+//       "description": "test",
+//       "username": "me",
+//       "user_id": 12345,
+//       "lastUpdated": "4:34PM"
+//     }
+//     const response = await axios({
+//       method: "post",
+//       url: 'http://localhost:3001/posts/validated',
+//       headers: { Authorization: `Bearer ${access_token}` },
+//       data: data
+//     });
+//     res.json(response.data);
+//   } catch (error) {
+//     console.log(error);
+//     if (error.response.status === 401) {
+//       res.status(401).json("Unauthorized to access data");
+//     } else if (error.response.status === 403) {
+//       res.status(403).json("Permission denied");
+//     } else {
+//       res.status(500).json("Whoops, something went wrong");
+//     }
+//   }
+// });
+
+
 
 // Get every post
-router.get('/', async (req, res) => {
+router.get('/',  async (req, res) => {
     try {
         const posts = await Post.find();
         res.json(posts);
@@ -26,7 +60,8 @@ router.get('/:postId', async (req, res) => {
 });
 
 // Create a post
-router.post('/', async (req, res) => {
+router.post('/', jwtCheck, async (req, res) => {
+    // console.log("request:",req)
     const newPost = new Post({
         title: req.body.title,
         description: req.body.description,
@@ -43,7 +78,7 @@ router.post('/', async (req, res) => {
 });
 
 // Delete a post
-router.delete('/:postId', async (req, res) => {
+router.delete('/:postId', jwtCheck, async (req, res) => {
     try {
         const removedPost = await Post.deleteMany({ _id: req.params.postId })
         res.json(removedPost)
@@ -54,7 +89,7 @@ router.delete('/:postId', async (req, res) => {
 });
 
 // Update a post
-router.patch('/:postId', async (req, res) => {
+router.patch('/:postId', jwtCheck, async (req, res) => {
     try {
         const updatedPost = await Post.updateOne(
             { _id: req.params.postId },

@@ -1,4 +1,4 @@
-GET http://localhost:3001/posts
+GET http://localhost:3001/profile
 
 ###
 
@@ -6,7 +6,7 @@ GET http://localhost:3001/posts/63cdf997aaad5da7ca865a38
 
 ###
 
-GET http://localhost:3001/posts/asdf123asdf
+GET https://mattsposts-api.onrender.com/posts
 
 ###
 
@@ -27,10 +27,11 @@ POST http://localhost:3001/posts
 content-type: application/json
 
 {
-    "title": "d",
-    "description": "k",
-    "username": "pickemtt",
-    "user_id": "google-oauth2|116384074292695553051"
+    "title": "sample",
+    "description": "test",
+    "username": "me",
+    "user_id": 12345,
+    "lastUpdated": "4:34PM"
 }
 
 ###
@@ -47,4 +48,18 @@ content-type: application/json
     "description": "new description",
     "username": "you",
     "user_id": 54321
+}
+
+
+###
+
+POST http://localhost:3001/posts
+content-type: application/json
+
+{
+    "title": "sample",
+    "description": "test",
+    "username": "me",
+    "user_id": 12345,
+    "lastUpdated": "4:34PM"
 }

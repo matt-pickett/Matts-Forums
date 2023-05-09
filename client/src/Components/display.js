@@ -49,7 +49,7 @@ export default function Display() {
   const [isEmpty, setIsEmpty] = useState(false);
   const [isLoading, setIsLoading] = useState(true); // add new state variable
   const navigate = useNavigate();
-  const { isAuthenticated, user } = useAuth0();
+  const { isAuthenticated, user, getAccessTokenSilently } = useAuth0();
 
   useEffect(() => {
     async function fetchData() {
@@ -74,8 +74,12 @@ export default function Display() {
  
  async function deleteRecord(id) {
    try {
+      const token = await getAccessTokenSilently();
       await fetch(`${process.env.REACT_APP_API_SERVER_URL}/${id}`, {
-        method: "DELETE"
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
       });
 
       // Optimzation technique
@@ -115,7 +119,7 @@ export default function Display() {
  if (isEmpty) {
   return (
     <div className="d-flex flex-column align-items-center justify-content-center" style={{ height: "100vh" }}>
-      <h1>No posts yet</h1>
+      <h1>No posts could be found</h1>
       {isAuthenticated && (
           <button className="btn btn-primary" onClick={() => navigate("/create")}>
             Create Post

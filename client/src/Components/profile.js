@@ -1,11 +1,22 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { GetLastUpdate } from "./getDate";
 export const ProfilePage = () => {
-  const { user } = useAuth0();
+  const { user, getAccessTokenSilently  } = useAuth0();
+
+  useEffect(() => {
+    // Get the JWT token from Auth0 when the component mounts
+    const getAccessToken = async () => {
+      const accessToken = await getAccessTokenSilently();
+    };
+
+    if (user) {
+      getAccessToken();
+    }
+  }, [user, getAccessTokenSilently]);
 
   if (!user) {
-    return null;
+    return <div>Please log in to view your profile.</div>;
   }
 
   const VerifiedEmail = (props) => {

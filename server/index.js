@@ -1,6 +1,6 @@
 require('dotenv').config();
 const app = require('express')();
-const PORT = 3001;
+const PORT = process.env.PORT;
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -10,7 +10,7 @@ const cors = require('cors');
 const postsRoutes = require('./routes/posts');
 
 // Define middleware
-app.use(cors())
+app.use(cors()) // enable CORS
 app.use(bodyParser.json()); // For every request run bodyParser
 app.use('/posts', postsRoutes)
 
@@ -22,7 +22,7 @@ mongoose.connect(
     useUnifiedTopology: true,
   },
   )
-  .then(()=>console.log('connected'))
+  .then(()=>console.log('Connected to MongoDB'))
   .catch(e=>console.log(e));
 
 // Set up Auth0
@@ -31,24 +31,23 @@ app.use(
   auth({
     authRequired: false,
     auth0Logout: true,
-    issuerBaseURL: process.env.ISSUER_BASE_URL,
+    issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL,
     baseURL: process.env.BASE_URL,
-    clientID: process.env.CLIENT_ID,
-    secret: process.env.SECRET,
+    clientID: process.env.AUTH0_CLIENT_ID,
+    secret: process.env.AUTH0_SECRET,
     idpLogout: true,
   })
 );
 
-app.get('/status', (req, res) => {
-    res.send(req.oidc.isAuthenticated() ? 'Logged In' : 'Logged Out');
-});
+// app.get('/status', (req, res) => {
+//     res.send(req.oidc.isAuthenticated() ? 'Logged In' : 'Logged Out');
+// });
 
-app.get('/profile', requiresAuth(), (req, res) => {
-    res.send(JSON.stringify(req.oidc.user));
-});
+// app.get('/profile', requiresAuth(), (req, res) => {
+//     res.send(JSON.stringify(req.oidc.user));
+// });
 
 mongoose.connection.once('open', () => {
-    console.log('Connected to MongoDB')
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
 })
 

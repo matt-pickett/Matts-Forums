@@ -23,7 +23,8 @@ const Auth0ProviderWithNavigate= ({ children }) => {
       domain={domain}
       clientId={clientId}
       authorizationParams={{
-        redirect_uri: redirectUri
+        redirect_uri: redirectUri,
+        audience: process.env.REACT_APP_AUTH0_AUDIENCE
       }}
       onRedirectCallback={onRedirectCallback}
     >

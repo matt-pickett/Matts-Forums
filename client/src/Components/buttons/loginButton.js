@@ -8,7 +8,7 @@ export const LoginButton = () => {
     
     await loginWithRedirect({
       appState: {
-        returnTo: "/profile",
+        returnTo: "/",
       },
     });
   };

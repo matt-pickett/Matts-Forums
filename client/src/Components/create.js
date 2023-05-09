@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { useAuth0 } from "@auth0/auth0-react";
 import { handleRequest } from './errorHandle';
+import queryString from "querystring";
+
 export default function Create() {
  const [data, setData] = useState({
    title: "",
@@ -10,9 +12,9 @@ export default function Create() {
    user_id: "",
    lastUpdated: ""
  });
- const navigate = useNavigate();
- const { user } = useAuth0();
-
+  const navigate = useNavigate();
+  const { user, getAccessTokenSilently } = useAuth0();
+  const location = useLocation();
  function updateForm(value) {
   value.username = user.nickname;
   value.user_id = user.sub;
@@ -25,16 +27,17 @@ export default function Create() {
  async function onSubmit(e) {
    e.preventDefault();
    const newPerson = { ...data };
-   
    try {
-     const response = await fetch(`${process.env.REACT_APP_API_SERVER_URL}`, {
-       method: "POST",
-       headers: {
-         "Content-Type": "application/json",
-       },
-       body: JSON.stringify(newPerson),
-     });
-     
+      const token = await getAccessTokenSilently();
+      const response = await fetch(`${process.env.REACT_APP_API_SERVER_URL}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(newPerson),
+      });
+      
      const ret = await handleRequest(response);
      if (!ret) {
        navigate("*");
