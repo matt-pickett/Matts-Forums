@@ -49,20 +49,33 @@ export default function Update() {
       user_id: data.user_id,
       lastUpdated: data.lastUpdated
     };
-
-    const token = await getAccessTokenSilently();
-    // This will send a post request to update the data in the database.
-    await fetch(`${process.env.REACT_APP_API_SERVER_URL}/${params.id}`, {
-      method: "PATCH",
-      body: JSON.stringify(updatedPost),
-      headers: {
-        'Content-Type': 'application/json',
-        "Authorization": `Bearer ${token}`
-      },
-    });
-
-    navigate("/");
+  
+    try {
+      const token = await getAccessTokenSilently();
+      const response = await fetch(`${process.env.REACT_APP_API_SERVER_URL}/${params.id}`, {
+        method: "PATCH",
+        body: JSON.stringify(updatedPost),
+        headers: {
+          'Content-Type': 'application/json',
+          "Authorization": `Bearer ${token}`
+        },
+      });
+  
+      if (response.ok) {
+        // Update successful
+        navigate("/");
+      } else {
+        // Handle error response
+        const errorMessage = await response.text();
+        console.error(errorMessage);
+        // Perform appropriate error handling
+      }
+    } catch (error) {
+      console.error("Request error:", error);
+      // Perform appropriate error handling
+    }
   }
+  
 
   return (
     <div className="d-flex flex-column align-items-center justify-content-center" style={{ height: "100vh" }}>

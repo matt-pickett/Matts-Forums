@@ -4,38 +4,7 @@ const Post = require('../models/Post');
 const router = express.Router();
 const oAuth = require("../middleware/oauth");
 const jwtCheck = require("../middleware/jwtCheck")
-
-
-// router.post('/', oAuth, async (req, res) => {
-//     try {
-//     const { access_token } = req.oauth;
-//     const data = {
-//       "title": "sample",
-//       "description": "test",
-//       "username": "me",
-//       "user_id": 12345,
-//       "lastUpdated": "4:34PM"
-//     }
-//     const response = await axios({
-//       method: "post",
-//       url: 'http://localhost:3001/posts/validated',
-//       headers: { Authorization: `Bearer ${access_token}` },
-//       data: data
-//     });
-//     res.json(response.data);
-//   } catch (error) {
-//     console.log(error);
-//     if (error.response.status === 401) {
-//       res.status(401).json("Unauthorized to access data");
-//     } else if (error.response.status === 403) {
-//       res.status(403).json("Permission denied");
-//     } else {
-//       res.status(500).json("Whoops, something went wrong");
-//     }
-//   }
-// });
-
-
+const CryptoJS = require('crypto-js');
 
 // Get every post
 router.get('/',  async (req, res) => {
@@ -61,21 +30,26 @@ router.get('/:postId', async (req, res) => {
 
 // Create a post
 router.post('/', jwtCheck, async (req, res) => {
-    // console.log("request:",req)
+    // Encrypt user_id using AES encryption
+    const encryptionKey = process.env.ENCRYPTION_KEY;
+    const encryptedUserId = CryptoJS.AES.encrypt(JSON.stringify(req.body.user_id), encryptionKey).toString();
+
     const newPost = new Post({
         title: req.body.title,
         description: req.body.description,
         username: req.body.username,
-        user_id: req.body.user_id,
+        user_id: encryptedUserId,
         lastUpdated: req.body.lastUpdated
     });
+
     try {
         const savedPost = await newPost.save();
         res.json(savedPost);
-    }catch(error) {
+    } catch(error) {
         res.json({ message: error });
     }
 });
+
 
 // Delete a post
 router.delete('/:postId', jwtCheck, async (req, res) => {
@@ -90,6 +64,8 @@ router.delete('/:postId', jwtCheck, async (req, res) => {
 
 // Update a post
 router.patch('/:postId', jwtCheck, async (req, res) => {
+    const encryptionKey = process.env.ENCRYPTION_KEY;
+    const encryptedUserId = CryptoJS.AES.encrypt(JSON.stringify(req.body.user_id), encryptionKey).toString();
     try {
         const updatedPost = await Post.updateOne(
             { _id: req.params.postId },
@@ -97,7 +73,7 @@ router.patch('/:postId', jwtCheck, async (req, res) => {
                 title: req.body.title, 
                 description: req.body.description, 
                 username: req.body.username,
-                user_id: req.body.user_id,
+                user_id: encryptedUserId,
                 lastUpdated: req.body.lastUpdated
                 }}
         );

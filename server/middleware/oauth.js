@@ -2,7 +2,7 @@
 // Uses authorization code that auth0 sends when user signs in
 // When we make fetch request in front end we would send the authorization code
 // as an optional query parameter and get it here
-// We are currently using the 'getAccessTokenSilently' method which does this for us
+// We are currently using the 'getAccessTokenSilently' method in client which does this for us
 
 // https://auth0.com/docs/get-started/authentication-and-authorization-flow/call-your-api-using-the-authorization-code-flow
 var axios = require("axios");

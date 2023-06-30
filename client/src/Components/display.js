@@ -4,13 +4,15 @@ import { Link } from "react-router-dom";
 import { useAuth0 } from "@auth0/auth0-react";
 import { handleArrayRequest } from './errorHandle';
 import { PageLoader } from "./pageLoader";
+import { decryptUserId } from "./decrypt";
 
 // Had to make this function NOT an implicit return arrow function
 // to define isAuthenticated. So I put {} after the => instead of (),
 // then said return ( [the HTML inside here is what returns] );
 const Record = (props) => {
   const navigate = useNavigate();
-  const { isAuthenticated, user } = useAuth0();
+   const { isAuthenticated, user } = useAuth0();
+   const user_id = decryptUserId(props.record.user_id);
   return (
  <tr>
    <td>
@@ -18,7 +20,7 @@ const Record = (props) => {
    </td>
    <td className="text-light">{props.record.username}</td>
    {/* Users can only edit their own post */}
-   {isAuthenticated && user.sub === props.record.user_id && (
+   {isAuthenticated && user.sub === user_id && (
     <>
       <td className="d-flex justify-content-center">
         <button className="btn btn-secondary me-3" onClick={() => navigate(`./update/${props.record._id}`)}>
@@ -34,12 +36,11 @@ const Record = (props) => {
       </td>
     </>
     )}
-    {isAuthenticated && user.sub !== props.record.user_id && (
+    {isAuthenticated && user.sub !== user_id && (
       <td></td>
     )}
     {!isAuthenticated && (
-        <td>
-        </td>
+        <td></td>
       )}
  </tr>
 )};
